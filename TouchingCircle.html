@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Circle</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const circle = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 20,
+            color: 'red',
+        };
+
+        let lastMouseX = null;
+        let lastMouseY = null;
+        let lastTimestamp = null;
+
+        function drawCircle() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+            ctx.fillStyle = circle.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function getRandomPosition() {
+            const randomX = Math.random() * (canvas.width - 2 * circle.radius) + circle.radius;
+            const randomY = Math.random() * (canvas.height - 2 * circle.radius) + circle.radius;
+            return { x: randomX, y: randomY };
+        }
+
+        function moveCircleAwayFromMouse(mouseX, mouseY, speed) {
+            const dx = circle.x - mouseX;
+            const dy = circle.y - mouseY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < circle.radius * 2) {
+                const angle = Math.atan2(dy, dx);
+                circle.x += Math.cos(angle) * speed;
+                circle.y += Math.sin(angle) * speed;
+
+                // Ensure the circle stays within canvas bounds and jumps to a random position if near the edges
+                if (circle.x <= circle.radius || circle.x >= canvas.width - circle.radius ||
+                    circle.y <= circle.radius || circle.y >= canvas.height - circle.radius) {
+                    const newPosition = getRandomPosition();
+                    circle.x = newPosition.x;
+                    circle.y = newPosition.y;
+                }
+            }
+        }
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            const timestamp = e.timeStamp;
+
+            if (lastMouseX !== null && lastMouseY !== null && lastTimestamp !== null) {
+                const deltaX = mouseX - lastMouseX;
+                const deltaY = mouseY - lastMouseY;
+                const deltaT = timestamp - lastTimestamp;
+
+                const speed = Math.sqrt(deltaX * deltaX + deltaY * deltaY) / deltaT * 50; // Adjust multiplier for sensitivity
+
+                moveCircleAwayFromMouse(mouseX, mouseY, speed);
+                drawCircle();
+            }
+
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+            lastTimestamp = timestamp;
+        });
+
+        drawCircle();
+    </script>
+</body>
+</html>

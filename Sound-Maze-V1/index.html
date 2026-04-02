@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>音频迷宫</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main
+      id="game-root"
+      class="game-root"
+      role="application"
+      aria-label="音频迷宫：移入红点开始。按 M 显示或隐藏迷宫调试层，按 R 重新开始。"
+    >
+      <canvas id="maze-debug" class="maze-debug" width="300" height="300" aria-hidden="true"></canvas>
+      <div id="start-hotspot" class="start-hotspot" aria-hidden="true">
+        <span class="start-dot" id="start-dot"></span>
+        <span class="start-label">start here</span>
+      </div>
+    </main>
+    <p class="sr-only" id="sr-instructions">
+      默认不显示迷宫。按字母 M 可切换是否在画面上显示迷宫底图（灰墙、深蓝路、红起点、绿终点）。移入左上角红点开始游戏；按 R 重新开始新迷宫。
+    </p>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
